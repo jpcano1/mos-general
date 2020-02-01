@@ -33,18 +33,35 @@ trabajos = [1, 2, 3, 4]
 Model.x = Var(maquinas, trabajos, domain=Binary)
 
 def objective(model):
+    """
+        Defines the objective of the model
+        :param model: the model
+        :return: the operation associated to the model
+    """
     operation = sum(maquinasTrabajos[i, j] * model.x[i, j] for i in maquinas for j in trabajos)
     return operation
 
 Model.obj = Objective(rule=objective, sense=minimize)
 
 def onePerWork(model, j):
+    """
+        Defines a constraint for a model iterating on the work
+        :param model: the model
+        :param j: the work
+        :return: the rule
+    """
     operation = sum(model.x[i, j] for i in maquinas) == 1
     return operation
 
 Model.onePerWork = Constraint(trabajos, rule=onePerWork)
 
 def onePerMachine(model, i):
+    """
+        Defines a constraint for a model iterating on the machines
+        :param model: the model
+        :param i: the machine
+        :return: the rule
+    """
     operation = sum(model.x[i, j] for j in maquinas) == 1
     return operation
 
