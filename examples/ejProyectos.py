@@ -1,4 +1,3 @@
-
 from __future__ import division
 from pyomo.environ import *
 
@@ -27,5 +26,3 @@ Model.res1 = Constraint(expr = sum(Model.x[i] for i in p) == 2)
 SolverFactory('glpk').solve(Model)
 
 Model.display()
-
-
