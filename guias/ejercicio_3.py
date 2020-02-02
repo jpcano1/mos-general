@@ -25,4 +25,3 @@ for i in nodos.keys():
         dist = cartesian_distance(coords_1[0], coords_2[0], coords_1[1], coords_2[1])
         if  0 < dist <= 20:
             arcos[(i, j)] = dist
-
