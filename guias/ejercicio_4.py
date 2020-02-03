@@ -5,6 +5,8 @@ from pyomo.opt import SolverFactory
 
 Model = ConcreteModel()
 
+numCities = 6
+
 ''' Modelado del problema número 4 '''
 distBetweenCities = {
     (1, 1): 0,
@@ -50,21 +52,26 @@ distBetweenCities = {
     (6, 6): 0,
 }
 
-cities = [1, 2, 3, 4, 5, 6]
+cities = RangeSet(1, numCities)
 
-Model.cities = Var(cities, within=Binary)
+Model.cities = Var(cities, cities, domain=Binary)
 
 def objective(model):
-    operation = sum(model.cities[i] * distBetweenCities[i, j] for i in cities for j in cities if i != j)
+    operation = sum(model.cities[i, j]*distBetweenCities[i, j] for i in cities for j in cities)
     return operation
 
 Model.obj = Objective(rule=objective, sense=minimize)
 
-def least_time(model, i, j):
-    dist = model.cities[i] * distBetweenCities[i, j]
-    return dist <= 15 if i != j else Constraint.NoConstraint
+# def least_time(model, i, j):
+#     dist = model.cities[i] * distBetweenCities[i, j]
+#     return dist <= 15
 
-Model.con_1 = Constraint(cities, cities, rule=least_time)
+def least_stations(model):
+    return sum(model.cities[i, j] for i in cities for j in cities) >= 1
+
+# Model.con_1 = Constraint(cities, cities, rule=least_time)
+
+Model.con_2 = Constraint(rule=least_stations)
 
 SolverFactory('glpk').solve(Model)
 
