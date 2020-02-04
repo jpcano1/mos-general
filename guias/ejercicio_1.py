@@ -6,6 +6,8 @@ from pyomo.opt import SolverFactory
 
 Model = ConcreteModel()
 
+num = 4
+
 maquinasTrabajos = {
     (1, 1): 14,
     (1, 2): 5,
@@ -28,8 +30,8 @@ maquinasTrabajos = {
     (4, 4): 10,
 }
 
-maquinas = [1, 2, 3, 4]
-trabajos = [1, 2, 3, 4]
+maquinas = RangeSet(1, num)
+trabajos = RangeSet(1, num)
 
 Model.x = Var(maquinas, trabajos, domain=Binary)
 
