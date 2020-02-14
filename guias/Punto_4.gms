@@ -1,5 +1,5 @@
 *************************************************************************
-***      Camino de mínimo costo                                       ***
+***      Camino de mÃ­nimo costo                                       ***
 ***                                                                   ***
 ***      Author: Daniel Serrano y Juan Pablo Cano                     ***
 *************************************************************************
@@ -19,7 +19,7 @@ n6       20      10      20      25      14      0;
 Parameter c(i,j) costos
 
 loop((i,j),
-         if( t(i,j) <= 15 and t(i,j) > 0,
+         if( t(i,j) <= 15,
          c(i,j) = 1
 else
 c(i,j) = 0);
@@ -27,7 +27,7 @@ c(i,j) = 0);
 
 
 Variables
-  v(i)      Indica si se construye una estación o no.
+  v(i)      Indica si se construye una estaciÃ³n o no.
   z           Objective function  ;
 
 Binary Variable v;
@@ -38,7 +38,7 @@ adyacenteI(i)            adyacentes i;
 
 objectiveFunction        ..  z =e= sum((i), v(i));
 
-adyacenteI(i)            .. v(i) + sum((j), c(i,j)) =g= 1 ;
+adyacenteI(i)            .. sum((j), c(i,j) * v(j)) =g= 1 ;
 
 Model model1 /all/ ;
 option mip=CPLEX
