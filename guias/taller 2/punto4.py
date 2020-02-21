@@ -20,15 +20,6 @@ Model.losas = Var(p, domain=Binary)
 
 Model.obj = Objective(expr=sum(Model.losas[i] for i in p), sense=minimize)
 
-#def least_one(model):
- #   return ((model.losas[1] + model.losas[5]) >= 1 and
-#            (model.losas[2] + model.losas[3] + model.losas[6] + model.losas[7]) >= 1 and
-#            (model.losas[5] + model.losas[9]) >= 1 and
- #           (model.losas[9] + model.losas[10] + model.losas[13] + model.losas[14]) >= 1 and
-#            (model.losas[13] + model.losas[17]) >= 1 and
- #           (model.losas[10] + model.losas[11] + model.losas[14] + model.losas[15]) >= 1 and
-  #          (model.losas[8] + model.losas[16] + model.losas[16] + model.losas[20] + model.losas[19]) >= 1)
-  
 def least_one_1(model):
     return model.losas[1] + model.losas[5] >= 1
 
