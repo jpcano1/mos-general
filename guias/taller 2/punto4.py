@@ -39,7 +39,7 @@ def least_one_6(model):
     return model.losas[10] + model.losas[11] + model.losas[14] + model.losas[15] >= 1
 
 def least_one_7(model):
-    return model.losas[8] + model.losas[16] + model.losas[16] + model.losas[20] + model.losas[19] >= 1
+    return model.losas[8] + model.losas[12] + model.losas[16] + model.losas[20] + model.losas[19] >= 1
 
 Model.res1 = Constraint(rule=least_one_1)
 Model.res2 = Constraint(rule=least_one_2)
