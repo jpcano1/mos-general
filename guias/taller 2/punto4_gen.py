@@ -30,14 +30,16 @@ m.losas = Var(p, domain=Binary)
 m.obj = Objective(expr=sum(m.losas[i] for i in p), sense=minimize)
 
 def least_connection(model, i):
-    index = []
-    for tuple_ in losas_arcos:
-        if i in tuple_:
-            for j in tuple_:
-                index.append(j)
-            losas_arcos.remove(tuple_)
-    print(index)
-    return sum(model.losas[k] for k in index) >= 1
+    index = 0
+    encontrado = False
+    tupla = None
+    while index < len(losas_arcos) and not encontrado:
+        if i in losas_arcos[index]:
+            tupla = losas_arcos[index]
+            #losas_arcos.pop(index)
+            encontrado = True
+        index += 1
+    return sum(model.losas[k] for k in tupla) >= 1 if tupla else Constraint.Skip
 
 m.res1 = Constraint(p, rule=least_connection)
 
