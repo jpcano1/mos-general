@@ -31,7 +31,19 @@ Binary Variable laboB(c)
 Variable z;
 
 Equations
-funcObjetivo        Funcion Objetivo;
+funcObjetivo        Funcion Objetivo
+resDuracionA        Restriccion de duracion ladoA
+resDuracionB        Restriccion de duracion ladoB;
 
-funcObjetivo        ..      z =e= sum((c), d(c, "duracion")*ladoA(c)) + sum(c, d(c, "duracion")*ladoB(c));
+funcObjetivo        ..      z =e= sum(c, d(c, "duracion")*ladoA(c)) + sum(c, d(c, "duracion")*ladoB(c));
+resDuracionA        ..      sum(c, d(c, "duracion")*ladoA(c)) =g= 14 and sum(c, d(c, "duracion")*ladoA(c)) =l= 16;
+resDuracionB        ..      sum(c, d(c, "duracion")*ladoB(c)) =g= 14 and sum(c, d(c, "duracion")*ladoB(c)) =l= 16;
 
+Model model1 /all/;
+
+option mip=CPLEX;
+Solve model1 using mip maximizing z;
+
+Display ladoA.l;
+Display ladoB.l;
+Display z.l;
