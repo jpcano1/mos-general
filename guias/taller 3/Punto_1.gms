@@ -1,12 +1,12 @@
  *************************************************************************
-***      Ejercicio 2                                                ***
+***      Ejercicio 1                                                ***
 ***                                                                   ***
 ***      Autor: Daniel Serrano y Juan Pablo Cano                      ***
 *************************************************************************
 $ontext
-Los trabajadores deben desempeñar sus cargos 5 días consecutivos y
-descansar 2 días. Por ejemplo, un trabajador que labora de martes a
-sábado, descansaría el domingo y el lunes.
+Los trabajadores deben desempeï¿½ar sus cargos 5 dï¿½as consecutivos y
+descansar 2 dï¿½as. Por ejemplo, un trabajador que labora de martes a
+sï¿½bado, descansarï¿½a el domingo y el lunes.
 
 $offtext
 Sets
