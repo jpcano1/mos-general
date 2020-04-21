@@ -16,19 +16,19 @@ ax.set(xlim=(-5, 105), ylim=(-5, 105))
 ax.grid(1)
 
 points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
-ax.plot(points["x"], points["y"], "ko")
+ax.plot(points["x"], points["y"], "k.")
 
 edges = []
 
 for i in range(len(points)):
-    ax.text(x=points["x"].iloc[i] - 0.1, y=points["y"].iloc[i] - 0.1, s=(i+1))
+    ax.text(x=points["x"].iloc[i] - 0.1, y=points["y"].iloc[i] - 0.1, s=(i+1), fontsize=12, weight='bold')
 
     for j in range(i+1, len(points)):
         first = points.iloc[i]
         second = points.iloc[j]
         x1, y1, x2, y2 = first["x"], first["y"], second["x"], second["y"]
         dist = distance(x1, y1, x2, y2)
-        if 0 < dist <= 15:
+        if 0 < dist <= 14:
             edges.append([(x1, x2), (y1, y2)])
 
 edges = pd.DataFrame(edges, columns=["Inicial", "Final"])
@@ -44,10 +44,10 @@ for i in range(1, len(points) + 1):
         second = points.loc[j]
         x1, y1, x2, y2 = first["x"], first["y"], second["x"], second["y"]
         dist = distance(x1, y1, x2, y2)
-        if 0 < dist <= 15:
+        if 0 < dist <= 14:
             edges[i, j] = dist
         else:
-            edges[i, j] = 999
+            edges[i, j] = 9999
 
 p = RangeSet(1, 100)
 
@@ -61,7 +61,7 @@ Model.obj = Objective(expr=sum(Model.x[i, j] * edges[i, j] for i in p for j in p
 
 def source_rule(model, i):
     if i == sourceNode:
-        return sum(model.x[i, j] for j in p) == 1
+        return sum(model.x[i, j] for j in p) + sum(model.x[j, i] for j in p) == 1
     else:
         return Constraint.Skip
 
@@ -69,7 +69,7 @@ Model.source = Constraint(p, rule=source_rule)
 
 def destination_rule(model, j):
     if j == destinationNode:
-        return sum(model.x[i, j] for i in p) == 1
+        return sum(model.x[i, j] for i in p) + sum(model.x[j, i] for i in p) == 1
     else:
         return Constraint.Skip
 
@@ -92,7 +92,7 @@ SolverFactory('glpk').solve(Model)
 
 for i in range(1, len(points) + 1):
     for j in range(1, len(points) + 1):
-        if Model.x[i, j].value == 1:
-            ax.plot([points.loc[i, "x"], points.loc[j, "x"]], [points.loc[i, "y"], points.loc[j, "y"]], "r--")
+        if Model.x[i, j] == 1:
+            ax.plot([points.loc[i, "x"], points.loc[j, "x"]], [points.loc[i, "y"], points.loc[j, "y"]], "rs-")
 
 plt.show()
