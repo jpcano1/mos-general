@@ -3,3 +3,5 @@ matplotlib
 pyomo
 sympy
 pandas
+openpyxl
+xlrd

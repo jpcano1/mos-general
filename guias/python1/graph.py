@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
+"""
+@requires pandas, numpy, xlrd, openpyxl
+"""
 
 # Functions
 def distance(x1, y1, x2, y2):
@@ -15,13 +18,14 @@ ax = figure.add_subplot(1, 1, 1)
 ax.set(xlim=(-5, 105), ylim=(-5, 105))
 ax.grid(1)
 
-points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
+# points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
+points = pd.read_excel("points.xlsx", index_col=0)
 ax.plot(points["x"], points["y"], "k.")
 
 edges = []
 
 for i in range(len(points)):
-    ax.text(x=points["x"].iloc[i] - 0.1, y=points["y"].iloc[i] - 0.1, s=(i+1), fontsize=12, weight='bold')
+    ax.text(x=points["x"].iloc[i] - 2, y=points["y"].iloc[i], s=(i+1), fontsize=12, weight='bold')
 
     for j in range(i+1, len(points)):
         first = points.iloc[i]
@@ -92,7 +96,7 @@ SolverFactory('glpk').solve(Model)
 
 for i in range(1, len(points) + 1):
     for j in range(1, len(points) + 1):
-        if Model.x[i, j] == 1:
+        if Model.x[i, j] == 1 and edges[i, j] != 9999:
             ax.plot([points.loc[i, "x"], points.loc[j, "x"]], [points.loc[i, "y"], points.loc[j, "y"]], "rs-")
 
 plt.show()
