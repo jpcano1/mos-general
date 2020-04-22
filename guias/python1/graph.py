@@ -18,8 +18,8 @@ ax = figure.add_subplot(1, 1, 1)
 ax.set(xlim=(-5, 105), ylim=(-5, 105))
 ax.grid(1)
 
-# points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
-points = pd.read_excel("points.xlsx", index_col=0)
+points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
+# points = pd.read_excel("points.xlsx", index_col=0)
 ax.plot(points["x"], points["y"], "k.")
 
 edges = []
