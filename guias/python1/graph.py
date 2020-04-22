@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-"""
-@requires pandas, numpy, xlrd, openpyxl
-"""
 
+"""
+@requires pandas, numpy
+"""
 # Functions
 def distance(x1, y1, x2, y2):
     return np.sqrt((x2 - x1) ** 2 + ( y2 - y1) ** 2)
@@ -29,14 +29,16 @@ n_shades = 10
 diff_linewidth = 1.05
 alpha_value = 0.3 / n_shades
 
-# points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)), columns=["x", "y"], index=np.arange(1, 101))
-points = pd.read_excel("points.xlsx", index_col=0)
+points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
+                      columns=["x", "y"], index=np.arange(1, 101))
+# points = pd.read_excel("points.xlsx", index_col=0)
 ax.plot(points["x"], points["y"], ".", color="#00fdff")
 
 edges = []
 
 for i in range(len(points)):
-    ax.text(x=points["x"].iloc[i] - 2, y=points["y"].iloc[i], s=(i+1), fontsize=12, weight='bold', color="#00fdff")
+    ax.text(x=points["x"].iloc[i] - 1, y=points["y"].iloc[i],
+            s=(i+1), fontsize=12, weight='bold', color="#00fdff")
 
     for j in range(i+1, len(points)):
         first = points.iloc[i]
@@ -49,10 +51,12 @@ for i in range(len(points)):
 edges = pd.DataFrame(edges, columns=["Inicial", "Final"])
 
 for i in range(len(edges)):
-    ax.plot(edges["Inicial"][i], edges["Final"][i], "--", color="#00fdff")
-    ax.plot(edges["Inicial"][i], edges["Final"][i], "-", color="#00fdff", alpha=0.2, linewidth=5.05)
+    ax.plot(edges["Inicial"][i], edges["Final"][i],
+            "--", color="#00fdff")
+    ax.plot(edges["Inicial"][i], edges["Final"][i], "-",
+            color="#00fdff", alpha=0.2, linewidth=5.05)
 
-# Hasta aquí va  la grafica de nodos y arcos
+# Hasta aquí va la grafica de nodos y arcos
 edges = {}
 for i in range(1, len(points) + 1):
     for j in range(1, len(points) + 1):
@@ -109,5 +113,7 @@ SolverFactory('glpk').solve(Model)
 for i in range(1, len(points) + 1):
     for j in range(1, len(points) + 1):
         if Model.x[i, j] == 1 and edges[i, j] != 9999:
-            ax.plot([points.loc[i, "x"], points.loc[j, "x"]], [points.loc[i, "y"], points.loc[j, "y"]], "s-", color="#ed0cef")
+            ax.plot([points.loc[i, "x"], points.loc[j, "x"]],
+                    [points.loc[i, "y"], points.loc[j, "y"]],
+                    "s-", color="#08ff08")
 plt.show()
