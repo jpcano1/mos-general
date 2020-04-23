@@ -37,8 +37,8 @@ ax.plot(points["x"], points["y"], ".", color="#00fdff")
 edges = []
 
 for i in range(len(points)):
-    ax.text(x=points["x"].iloc[i] - 1, y=points["y"].iloc[i],
-            s=(i+1), fontsize=12, weight='bold', color="#00fdff")
+    ax.text(x=points["x"].iloc[i] + 1, y=points["y"].iloc[i],
+            s=(i+1), fontsize=8, weight='bold', color="#00fdff")
 
     for j in range(i+1, len(points)):
         first = points.iloc[i]
@@ -54,7 +54,7 @@ for i in range(len(edges)):
     ax.plot(edges["Inicial"][i], edges["Final"][i],
             "--", color="#00fdff")
     ax.plot(edges["Inicial"][i], edges["Final"][i], "-",
-            color="#00fdff", alpha=0.2, linewidth=5.05)
+            color="#00fdff", alpha=0.1, linewidth=4.5)
 
 # Hasta aquí va la grafica de nodos y arcos
 edges = {}
