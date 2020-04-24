@@ -76,7 +76,7 @@ def to_graph(nodes, edges):
     """
     frame = pd.DataFrame(edges.loc[:, ["i", "j", "Weight"]])
     frame = frame.set_index("i")
-    g = {}
+    graph = {}
     for point in nodes.index:
         neighbors = {}
         try:
@@ -86,11 +86,11 @@ def to_graph(nodes, edges):
             else:
                 neighbor, weight = frame.loc[point]
                 neighbors[int(neighbor)] = weight
-            g[point] = neighbors
+            graph[point] = neighbors
         except:
-            g[point] = neighbors
+            graph[point] = neighbors
             continue
-    return g
+    return graph
 
 def draw_path(path, axes, nodes):
     """
