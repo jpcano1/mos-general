@@ -20,13 +20,13 @@ def draw_styles():
 def distance(x1, y1, x2, y2):
     return np.sqrt((x2 - x1) ** 2 + ( y2 - y1) ** 2)
 
-def dijkstra(graph, start, goal):
+def dijkstra(graph, source, destination):
     """
     Crea el camino de menor costo entre un
     punto de inicio y otro de llegada
     @param graph: el espacio de busqueda
-    @param start: nodo de inicio
-    @param goal: nodo de llegada
+    @param source: nodo de inicio
+    @param destination: nodo de llegada
     @return: el camino de menor costo
     """
     shortest_distance = {}
@@ -36,7 +36,7 @@ def dijkstra(graph, start, goal):
     path = []
     for node in unseenNodes:
         shortest_distance[node] = infinity
-    shortest_distance[start] = 0
+    shortest_distance[source] = 0
 
     while unseenNodes:
         minNode = None
@@ -52,8 +52,8 @@ def dijkstra(graph, start, goal):
                 predecessor[childNode] = minNode
         unseenNodes.pop(minNode)
 
-    currentNode = goal
-    while currentNode != start:
+    currentNode = destination
+    while currentNode != source:
         try:
             path.insert(0, currentNode)
             currentNode = predecessor[currentNode]
@@ -61,8 +61,8 @@ def dijkstra(graph, start, goal):
             print('No hay ruta')
             break
 
-    path.insert(0, start)
-    if shortest_distance[goal] != infinity:
+    path.insert(0, source)
+    if shortest_distance[destination] != infinity:
         return path
     else:
         return None
