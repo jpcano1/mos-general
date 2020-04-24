@@ -6,6 +6,14 @@ import pandas as pd
 @requires pandas, numpy
 """
 # Functions
+
+def draw_styles():
+    plt.style.use("dark_background")
+    for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
+        plt.rcParams[param] = '0.9'  # very light grey
+    for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
+        plt.rcParams[param] = '#212946'  # bluish dark grey
+
 def distance(x1, y1, x2, y2):
     return np.sqrt((x2 - x1) ** 2 + ( y2 - y1) ** 2)
 
@@ -56,20 +64,24 @@ def dijkstra(graph, start, goal):
     else:
         return None
 
-def to_graph(p, e):
+def to_graph(nodes, edges):
     """
     Crea el grafo a partir de puntos y arcos
-    @param p: los puntos del grafo
-    @param e: los arcos del grafo
+    @param nodes: los puntos del grafo
+    @param edges: los arcos del grafo
     @return: El grafo en forma de diccionario
     """
-    frame = pd.DataFrame(e.loc[:, ["i", "j", "Weight"]])
+    frame = pd.DataFrame(edges.loc[:, ["i", "j", "Weight"]])
     frame = frame.set_index("i")
     g = {}
-    for point in p.index:
+    for point in nodes.index:
         neighbors = {}
         try:
-            for neighbor, weight in frame.loc[point].values:
+            if len(frame.loc[point].shape) > 1:
+                for neighbor, weight in frame.loc[point].values:
+                    neighbors[int(neighbor)] = weight
+            else:
+                neighbor, weight = frame.loc[point]
                 neighbors[int(neighbor)] = weight
             g[point] = neighbors
         except:
@@ -77,12 +89,53 @@ def to_graph(p, e):
             continue
     return g
 
+def draw_path(path, axes, nodes):
+    """
+    Dibuja la ruta entre dos puntos del grafo
+    @param path: la ruta entre dos puntos del grafo
+    @param axes: el plot donde se dibujara el camino
+    @param nodes: los nodos de la ruta
+    """
+    for i in range(1, len(path)):
+        current = path[i]
+        previous = path[i - 1]
+        (x1, y1), (x2, y2) = nodes.loc[current, ["x", "y"]], nodes.loc[previous, ["x", "y"]]
+        axes.plot([x1, x2], [y1, y2], color="#08ff08", marker="s", linestyle="-")
+
+def draw_edges(edges, axes):
+    """
+    Dibuja los arcos entre los nodos
+    @param edges: los arcos a dibujar
+    @param axes: el plot donde se van a dibujar
+    """
+    for i in range(len(edges)):
+        axes.plot(edges["Inicial"][i], edges["Final"][i],
+                "--", color="#00fdff", alpha=0.7)
+        axes.plot(edges["Inicial"][i], edges["Final"][i], "-",
+                  color="#00fdff", alpha=0.1, linewidth=3.5)
+
+def create_edges(nodes):
+    """
+    Crea los arcos a partir de la distancia
+    euclidiana
+    @param nodes: los nodos a ser calculados
+    @return: un DataFrame con los arcos calculados
+    """
+    edges = []
+    for i in range(len(nodes)):
+        ax.text(x=nodes["x"].iloc[i] + 1, y=nodes["y"].iloc[i],
+                s=(i + 1), fontsize=8, weight='bold', color="#00fdff")
+        for j in range(len(nodes)):
+            first = nodes.iloc[i]
+            second = nodes.iloc[j]
+            x1, y1, x2, y2 = first["x"], first["y"], second["x"], second["y"]
+            dist = distance(x1, y1, x2, y2)
+            if 0 < dist <= 14:
+                edges.append([(x1, x2), (y1, y2), i + 1, j + 1, dist])
+    return pd.DataFrame(edges, columns=["Inicial", "Final", "i", "j", "Weight"])
+
 # Styles
-plt.style.use("dark_background")
-for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
-    plt.rcParams[param] = '0.9'  # very light grey
-for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
-    plt.rcParams[param] = '#212946'  # bluish dark grey
+draw_styles()
 
 # Plots
 figure = plt.figure(figsize=(5, 5))
@@ -90,38 +143,24 @@ ax = figure.add_subplot(1, 1, 1)
 ax.set(xlim=(-5, 105), ylim=(-5, 105))
 ax.grid(color='#2A3459')
 
-n_shades = 10
-diff_linewidth = 1.05
-alpha_value = 0.3 / n_shades
-
+# Points
 # points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
 #                       columns=["x", "y"], index=np.arange(1, 101))
 points = pd.read_excel("points.xlsx", index_col=0)
 ax.plot(points["x"], points["y"], ".", color="#00fdff")
 
-edges = []
+# Edges
+e = create_edges(points)
 
-for i in range(len(points)):
-    ax.text(x=points["x"].iloc[i] + 1, y=points["y"].iloc[i],
-            s=(i+1), fontsize=8, weight='bold', color="#00fdff")
+draw_edges(e, ax)
 
-    for j in range(len(points)):
-        first = points.iloc[i]
-        second = points.iloc[j]
-        x1, y1, x2, y2 = first["x"], first["y"], second["x"], second["y"]
-        dist = distance(x1, y1, x2, y2)
-        if 0 < dist <= 14:
-            edges.append([(x1, x2), (y1, y2), i+1, j+1, dist])
+# Graph and Path
+g = to_graph(points, e)
+s = int(input("Ingrese el nodo origen: "))
+d = int(input("Ingrese el nodo destino: "))
 
-edges = pd.DataFrame(edges, columns=["Inicial", "Final", "i", "j", "Weight"])
+p = dijkstra(g, s, d)
 
-for i in range(len(edges)):
-    ax.plot(edges["Inicial"][i], edges["Final"][i],
-            "--", color="#00fdff")
-    ax.plot(edges["Inicial"][i], edges["Final"][i], "-",
-            color="#00fdff", alpha=0.1, linewidth=3.5)
-graph = to_graph(points, edges)
-path = dijkstra(graph, 22, 44)
+draw_path(p, ax, points)
 
-print(str(path))
-# plt.show()
+plt.show()
