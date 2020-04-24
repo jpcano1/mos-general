@@ -8,6 +8,9 @@ import pandas as pd
 # Functions
 
 def draw_styles():
+    """
+    Se encarga de poner el estilo en el plot principal
+    """
     plt.style.use("dark_background")
     for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
         plt.rcParams[param] = '0.9'  # very light grey
@@ -55,7 +58,7 @@ def dijkstra(graph, start, goal):
             path.insert(0, currentNode)
             currentNode = predecessor[currentNode]
         except KeyError:
-            print('Path not reachable')
+            print('No hay ruta')
             break
 
     path.insert(0, start)
@@ -144,9 +147,9 @@ ax.set(xlim=(-5, 105), ylim=(-5, 105))
 ax.grid(color='#2A3459')
 
 # Points
-# points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
-#                       columns=["x", "y"], index=np.arange(1, 101))
-points = pd.read_excel("points.xlsx", index_col=0)
+points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
+                      columns=["x", "y"], index=np.arange(1, 101))
+# points = pd.read_excel("points.xlsx", index_col=0)
 ax.plot(points["x"], points["y"], ".", color="#00fdff")
 
 # Edges
