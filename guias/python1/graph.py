@@ -3,9 +3,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 """
-@requires pandas, numpy
+@requires pandas, numpy, openpyxl, xlrd
 """
 # Functions
+
+graph_color = "#00fdff"
+path_color = "#00ff41"
 
 def draw_styles():
     """
@@ -103,7 +106,7 @@ def draw_path(path, axes, nodes):
         current = path[i]
         previous = path[i - 1]
         (x1, y1), (x2, y2) = nodes.loc[current, ["x", "y"]], nodes.loc[previous, ["x", "y"]]
-        axes.plot([x1, x2], [y1, y2], color="#08ff08", marker="s", linestyle="-")
+        axes.plot([x1, x2], [y1, y2], color=path_color, marker="s", linestyle="-")
 
 def draw_edges(edges, axes):
     """
@@ -113,9 +116,9 @@ def draw_edges(edges, axes):
     """
     for i in range(len(edges)):
         axes.plot(edges["Inicial"][i], edges["Final"][i],
-                "--", color="#00fdff", alpha=0.7)
+                "--", color=graph_color, alpha=0.7)
         axes.plot(edges["Inicial"][i], edges["Final"][i], "-",
-                  color="#00fdff", alpha=0.1, linewidth=3.5)
+                  color=graph_color, alpha=0.1, linewidth=3.5)
 
 def create_edges(nodes):
     """
@@ -127,7 +130,7 @@ def create_edges(nodes):
     edges = []
     for i in range(len(nodes)):
         ax.text(x=nodes["x"].iloc[i] + 1, y=nodes["y"].iloc[i],
-                s=(i + 1), fontsize=8, weight='bold', color="#00fdff")
+                s=(i + 1), fontsize=8, weight='bold', color=graph_color)
         for j in range(len(nodes)):
             first = nodes.iloc[i]
             second = nodes.iloc[j]
@@ -150,7 +153,7 @@ ax.grid(color='#2A3459')
 points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
                       columns=["x", "y"], index=np.arange(1, 101))
 # points = pd.read_excel("points.xlsx", index_col=0)
-ax.plot(points["x"], points["y"], ".", color="#00fdff")
+ax.plot(points["x"], points["y"], ".", color=graph_color)
 
 # Edges
 e = create_edges(points)
