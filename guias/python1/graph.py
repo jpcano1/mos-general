@@ -6,7 +6,6 @@ import pandas as pd
 @requires pandas, numpy, openpyxl, xlrd
 """
 # Functions
-
 graph_color = "#00fdff"
 path_color = "#00ff41"
 
@@ -21,6 +20,14 @@ def draw_styles():
         plt.rcParams[param] = '#212946'  # bluish dark grey
 
 def distance(x1, y1, x2, y2):
+    """
+    Calcula la distancia euclidiana entre dos puntos x, y
+    @param x1: coordenada x del primer punto
+    @param y1: coordenada y del primer punto
+    @param x2: coordenada x del segundo punto
+    @param y2: coordenada y del segundo punto
+    @return: la distancia euclidiana
+    """
     return np.sqrt((x2 - x1) ** 2 + ( y2 - y1) ** 2)
 
 def dijkstra(graph, source, destination):
@@ -41,20 +48,24 @@ def dijkstra(graph, source, destination):
         shortest_distance[node] = infinity
     shortest_distance[source] = 0
 
+    # Mientras hayan nodos sin visitar
     while unseenNodes:
         minNode = None
+        # Para cada nodo sin visitar busca la menor distancia
         for node in unseenNodes:
             if minNode is None:
                 minNode = node
             elif shortest_distance[node] < shortest_distance[minNode]:
                 minNode = node
 
+        # Almacena el nodo
         for childNode, weight in graph[minNode].items():
             if weight + shortest_distance[minNode] < shortest_distance[childNode]:
                 shortest_distance[childNode] = weight + shortest_distance[minNode]
                 predecessor[childNode] = minNode
         unseenNodes.pop(minNode)
 
+    # Empieza a añadir la ruta
     currentNode = destination
     while currentNode != source:
         try:
@@ -64,6 +75,7 @@ def dijkstra(graph, source, destination):
             print('No hay ruta')
             break
 
+    # Si hay ruta, la traza
     path.insert(0, source)
     if shortest_distance[destination] != infinity:
         return path
@@ -129,8 +141,6 @@ def create_edges(nodes):
     """
     edges = []
     for i in range(len(nodes)):
-        ax.text(x=nodes["x"].iloc[i] + 1, y=nodes["y"].iloc[i],
-                s=(i + 1), fontsize=8, weight='bold', color=graph_color)
         for j in range(len(nodes)):
             first = nodes.iloc[i]
             second = nodes.iloc[j]
@@ -140,33 +150,82 @@ def create_edges(nodes):
                 edges.append([(x1, x2), (y1, y2), i + 1, j + 1, dist])
     return pd.DataFrame(edges, columns=["Inicial", "Final", "i", "j", "Weight"])
 
-# Styles
-draw_styles()
+def generate_points():
+    """
+    Funcion que genera los puntos ubicados en el grafo
+    @return: un DataFrame con los puntos en el grafo
+    """
+    return pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
+                          columns=["x", "y"], index=range(1, 101))
+    # return pd.read_excel("points.xlsx", index_col=0)
 
-# Plots
-figure = plt.figure(figsize=(5, 5))
-ax = figure.add_subplot(1, 1, 1)
-ax.set(xlim=(-5, 105), ylim=(-5, 105))
-ax.grid(color='#2A3459')
+def draw_points(axes, nodes):
+    """
+    Se encarga de dibujar los puntos en el grafo
+    con su respectivo texto
+    @param axes: la figura donde se dibujará el grafo
+    @param nodes: los nodos que serán dibujados
+    """
+    axes.plot(nodes["x"], nodes["y"], ".", color=graph_color)
+    for i in range(100):
+        axes.text(x=nodes["x"].iloc[i] + 1, y=nodes["y"].iloc[i],
+                s=(i + 1), fontsize=8, weight='bold', color=graph_color)
 
-# Points
-points = pd.DataFrame(data=np.random.uniform(0, 100, size=(100, 2)),
-                      columns=["x", "y"], index=np.arange(1, 101))
-# points = pd.read_excel("points.xlsx", index_col=0)
-ax.plot(points["x"], points["y"], ".", color=graph_color)
-
-# Edges
-e = create_edges(points)
-
-draw_edges(e, ax)
+def create_figure():
+    """
+    Crea la figura donde se dibujara el grafo
+    @return: la figura de dibujo
+    """
+    draw_styles()
+    fig = plt.figure(figsize=(5, 5))
+    axes = fig.add_subplot(111)
+    axes.set(xlim=(-5, 105), ylim=(-5, 105))
+    axes.grid(color='#2A3459', linestyle="--")
+    return axes
 
 # Graph and Path
-g = to_graph(points, e)
-s = int(input("Ingrese el nodo origen: "))
-d = int(input("Ingrese el nodo destino: "))
 
-p = dijkstra(g, s, d)
+def print_menu():
+    """
+    Imprime el menu del programa
+    """
+    print("-------------Taller 2--------------")
+    print("Escoja una opción:")
+    print("1. Generar grafo")
+    if len(points) > 0:
+        print("2. Ingresar nodos de ruta")
+    if len(p) > 0:
+        print("3. Mostrar ruta en el grafo")
+        print("4. Salir")
 
-draw_path(p, ax, points)
+if __name__ == "__main__":
+    finished = False
 
-plt.show()
+    points = []; e = []; p = []
+
+    while not finished:
+        print_menu()
+        option = int(input())
+
+        if option == 1:
+            ax = create_figure()
+            points = generate_points()
+            draw_points(ax, points)
+            e = create_edges(points)
+            draw_edges(e, ax)
+            plt.show()
+        elif option == 2:
+            g = to_graph(points, e)
+            s = int(input("Ingrese el nodo origen: "))
+            d = int(input("Ingrese el nodo destino: "))
+            p = dijkstra(g, s, d)
+        elif option == 3:
+            ax = create_figure()
+            draw_points(ax, points)
+            draw_edges(e, ax)
+            draw_path(p, ax, points)
+            plt.show()
+        elif option == 4:
+            finished = True
+        else:
+            print("Opcion no valida")
