@@ -181,6 +181,7 @@ def create_figure():
     axes = fig.add_subplot(111)
     axes.set(xlim=(-5, 105), ylim=(-5, 105))
     axes.grid(color='#2A3459', linestyle="--")
+    axes.set_title("Graph")
     return axes
 
 # Graph and Path
