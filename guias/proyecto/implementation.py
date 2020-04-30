@@ -55,8 +55,6 @@ nodos = {
 }
 
 arcos, _ = generate_edges(nodos)
-arcos_df = pd.DataFrame(arcos).transpose()
-#print(arcos_df)
 
 paquetes = {
     1: {
