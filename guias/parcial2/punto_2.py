@@ -93,10 +93,4 @@ Model.res3 = Constraint(p, rule=onePerSwimmer)
 
 SolverFactory('glpk').solve(Model)
 
-# var = 0
-# for i in p:
-#     for j in estilos:
-#         if Model.nadadores[i, j].value == 1:
-#             var += nadadores[i][j]
-# print(var)
 Model.display()
