@@ -182,7 +182,7 @@ def create_model():
     # Le asigna la variable del grafo
     model.x = Var(p, p, domain=Binary)
     # Le asigna la funcion objetivo
-    model.obj =Objective(rule=objective, sense=minimize)
+    model.obj = Objective(rule=objective, sense=minimize)
     # Le asigna las restricciones
     model.res1 = Constraint(p, rule=source_rule)
     model.res2 = Constraint(p, rule=not_source_rule)
