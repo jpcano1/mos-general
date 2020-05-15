@@ -1,3 +1,6 @@
+"""
+@author: Juan Pablo Cano y Daniel Serrano
+"""
 from __future__ import division
 from pyomo.environ import *
 
