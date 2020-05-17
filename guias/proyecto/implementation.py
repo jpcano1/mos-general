@@ -97,6 +97,14 @@ def objective(model):
 Model.obj = Objective(rule=objective, sense=maximize)
 
 def max_weight(model, i, j):
+    """
+    Restricción que modela el peso máximo para el número
+    de paquetes que un envío puede llevar por las vías del país
+    @param model: el modelo al cual se le aplicara  la restricción
+    @param i: los nodos de salida
+    @param j: los nodos de llegada
+    @return: la restricción
+    """
     if arcos[i, j]["M"] > 0:
         expr1 = sum(paquetes[k]["P"] * model.paquetes[k] for k in p)
         expr2 = arcos[i, j]["M"]
@@ -157,5 +165,6 @@ Model.res3 = Constraint(r, rule=destination_rule)
 Model.res4 = Constraint(r, rule=intermediate_rule)
 Model.res5 = Constraint(r, r, rule=not_repeated)
 
+# Solver
 SolverFactory('glpk').solve(Model)
 Model.display()
